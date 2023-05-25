@@ -4,8 +4,22 @@ function Book(title, author, pages) {
     this.title = title
     this.author = author
     this.pages = pages
+    this.read = false;
     this.info = function() {
-      return title + ", " + author + ", " + pages;
+        let readStatus;
+        if(this.read == false) {
+            readStatus = 'You did not read this book yet.';
+        }
+        else {
+            readStatus = 'You read this book already.'
+        }
+      return title + ", " + author + ", " + pages + ' ' + readStatus;
+    }
+    this.isRead = function() {
+        return this.read;
+    }
+    this.updateRead = function(read) {
+        this.read = read;
     }
 }
 function addBookToLibrary(title, author, pages) {
@@ -22,9 +36,28 @@ const bookContainer = document.querySelector('.book-container');
 function displayBooks() {
     for (let i = 0; i < books.length; i++) {
         const div = document.createElement('div');
-        div.classList.add('content');
+        div.id = i;
         div.textContent = books[i].info();
-        bookContainer.appendChild(div);  
+        bookContainer.appendChild(div);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('deleteBtn');
+        deleteBtn.textContent = 'Delete'; 
+        deleteBtn.addEventListener('click', () => {
+            let b = document.getElementById(i);   
+            bookContainer.removeChild(b);
+            removeBookFromLibrary(i);
+            updateBookDisplay();
+        }); 
+        bookContainer.appendChild(deleteBtn); 
+
+        const readBtn = document.createElement('button');
+        readBtn.classList.add('readBtn');
+        readBtn.textContent = 'Read'; 
+        readBtn.addEventListener('click', () => {
+            books[i].updateRead(true);
+            updateBookDisplay();
+        }); 
+        bookContainer.appendChild(readBtn); 
     }
 }
 function removeBookDisplay() {
@@ -57,13 +90,13 @@ var clickSubmit = function(event) {
   
     let bookID = books.length
     const book = new Book(title, author, pages)
-    const div = document.createElement('div');
+    /* const div = document.createElement('div');
     div.id = bookID;
     div.textContent = book.info();
     bookContainer.appendChild(div);  
     const btn = document.createElement('button');
     btn.classList.add('btn');
-    btn.textContent = 'delete';
+    btn.textContent = 'delete'; 
 
     btn.addEventListener('click', () => {
         let b = document.getElementById(bookID);   
@@ -72,9 +105,10 @@ var clickSubmit = function(event) {
         updateBookDisplay();
         
 
-    });
-    bookContainer.appendChild(btn);
+    }); 
+    bookContainer.appendChild(btn);*/
     addBookToLibrary(title, author, pages)
+    updateBookDisplay();
 };
 
 // your form
